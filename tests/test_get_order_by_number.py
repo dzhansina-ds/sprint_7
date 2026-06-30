@@ -1,4 +1,4 @@
-from data import TestData
+from data import TestData, TestAnswer
 import requests
 import allure 
 from urls import URL
@@ -33,7 +33,7 @@ class TestGetOrderByNumber:
         response = requests.get(URL.ORDERS_TRACK,params=params)
 
         assert response.status_code == 400
-        assert response.json()['message'] == "Недостаточно данных для поиска"
+        assert response.json()['message'] == TestAnswer.INCOMPLETE_DATA_FOR_SEARCH
 
     @allure.title('Запрос на получение заказа с несуществующим заказом. Проверка тела ответа')
     def test_get_order_with_wrong_number_error(self):
@@ -42,4 +42,4 @@ class TestGetOrderByNumber:
         response = requests.get(URL.ORDERS_TRACK, params=params)
 
         assert response.status_code == 404
-        assert response.json()['message'] == "Заказ не найден"
+        assert response.json()['message'] == TestAnswer.ORDER_NOT_FOUND

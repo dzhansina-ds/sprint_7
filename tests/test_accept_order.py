@@ -1,5 +1,5 @@
 import requests
-from data import TestData
+from data import TestData, TestAnswer
 import allure 
 import string
 import random
@@ -49,7 +49,7 @@ class TestAcceptOrder:
         response = requests.put(f'{URL.ORDERS_ACCEPT}/{order_id}', params=params)
 
         assert response.status_code == 200
-        assert response.json() == {"ok":True}
+        assert response.json() == TestAnswer.SUCCESS_TEXT
 
         requests.delete(f'{URL.COURIER}/{courier_id}')
 
@@ -61,7 +61,7 @@ class TestAcceptOrder:
         response = requests.put(f'{URL.ORDERS_ACCEPT}/1', params=params)
 
         assert response.status_code == 400
-        assert response.json()['message'] == "Недостаточно данных для поиска"
+        assert response.json()['message'] == TestAnswer.INCOMPLETE_DATA_FOR_SEARCH
 
     
     @allure.title('Принятие заказа. В запросе указываем неверный id курьера. Проверка тела ответа')
@@ -73,7 +73,7 @@ class TestAcceptOrder:
         response = requests.put(f'{URL.ORDERS_ACCEPT}/1', params=params)
 
         assert response.status_code == 404
-        assert response.json()['message'] == "Курьера с таким id не существует"
+        assert response.json()['message'] == TestAnswer.COURIER_NOT_EXIST
 
 
     @allure.title('Принятие заказа. В запросе не указываем id заказа. Проверка тела ответа')
@@ -100,7 +100,7 @@ class TestAcceptOrder:
         response = requests.put(URL.ORDERS_ACCEPT, params=params)
 
         assert response.status_code == 404
-        assert response.json()['message'] == "Not Found."
+        assert response.json()['message'] == TestAnswer.NOT_FOUND
 
 
     @allure.title('Принятие заказа. В запросе указываем неверный id заказа. Проверка тела ответа')
@@ -127,6 +127,6 @@ class TestAcceptOrder:
         response = requests.put(f'{URL.ORDERS_ACCEPT}/0', params=params)
 
         assert response.status_code == 404
-        assert response.json()['message'] == "Заказа с таким id не существует"
+        assert response.json()['message'] == TestAnswer.ORDER_ID_NOT_EXIST
 
         requests.delete(f'{URL.COURIER}/{courier_id}')

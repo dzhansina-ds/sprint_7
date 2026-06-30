@@ -5,6 +5,7 @@ import pytest
 import allure 
 from generator import Generator
 from urls import URL
+from data import TestAnswer
 
 class TestCreatingCourier:
     
@@ -24,7 +25,7 @@ class TestCreatingCourier:
         response = requests.post(URL.COURIER, data=payload)
 
         assert response.status_code == 201
-        assert response.json() == {"ok":True}
+        assert response.json() == TestAnswer.SUCCESS_TEXT
 
         logging = requests.post(URL.COURIER_LOGIN, data=payload)
         courier_id = logging.json().get('id')
@@ -49,7 +50,7 @@ class TestCreatingCourier:
 
         second_response = requests.post(URL.COURIER, data=payload)
         assert second_response.status_code == 409
-        assert second_response.json()['message'] == "Этот логин уже используется. Попробуйте другой."
+        assert second_response.json()['message'] == TestAnswer.BUSY_USERNAME
 
         logging = requests.post(URL.COURIER_LOGIN, data=payload)
         courier_id = logging.json().get('id')
@@ -76,4 +77,4 @@ class TestCreatingCourier:
 
 
         assert response.status_code == 400
-        assert response.json()['message'] == "Недостаточно данных для создания учетной записи"
+        assert response.json()['message'] == TestAnswer.COURIER_INCOMPLETE_DATA

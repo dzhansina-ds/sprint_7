@@ -1,5 +1,5 @@
 import requests
-from data import TestData
+from data import TestData, TestAnswer
 import pytest
 import allure 
 import string
@@ -45,7 +45,7 @@ class TestLoginCourier:
         response = requests.post(URL.COURIER_LOGIN, data=payload)
 
         assert response.status_code == 400
-        assert response.json()['message'] == "Недостаточно данных для входа"
+        assert response.json()['message'] == TestAnswer.INCOMPLETE_DATA_FOR_ENTER
 
     @allure.title('Логин курьера. Ошибка при использовании невалидных данных')
     @pytest.mark.parametrize(
@@ -65,4 +65,4 @@ class TestLoginCourier:
         response = requests.post(URL.COURIER_LOGIN, data=payload)
 
         assert response.status_code == 404
-        assert response.json()['message'] == "Учетная запись не найдена"
+        assert response.json()['message'] == TestAnswer.ACCOUNT_NOT_FOUND

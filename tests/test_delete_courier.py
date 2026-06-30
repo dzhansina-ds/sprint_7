@@ -4,6 +4,7 @@ import string
 import random
 from generator import Generator
 from urls import URL
+from data import TestAnswer
 
 class TestDeleteCourier:
 
@@ -27,7 +28,7 @@ class TestDeleteCourier:
         response = requests.delete(f'{URL.COURIER}/{courier_id}')
 
         assert response.status_code == 200
-        assert response.json() == {"ok":True}
+        assert response.json() == TestAnswer.SUCCESS_TEXT
 
 
     @allure.title('Удаление курьера. Отправка запроса без id. Проверка тела ответа')
@@ -45,4 +46,4 @@ class TestDeleteCourier:
         response = requests.delete(f'{URL.COURIER}/0')
 
         assert response.status_code == 404
-        assert response.json()['message'] == "Курьера с таким id нет."
+        assert response.json()['message'] == TestAnswer.COURIER_NOT_FOUND

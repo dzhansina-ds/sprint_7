@@ -11,3 +11,16 @@ class TestData:
     rentTime = 5
     deliveryDate = '2020-07-07' 
     comment = 'Welcome to the RIP City'    
+
+class TestAnswer:
+    SUCCESS_TEXT = {"ok":True}
+    INCOMPLETE_DATA_FOR_SEARCH = "Недостаточно данных для поиска"
+    COURIER_NOT_EXIST = "Курьера с таким id не существует"
+    NOT_FOUND = "Not Found."
+    ORDER_ID_NOT_EXIST = "Заказа с таким id не существует"
+    BUSY_USERNAME = "Этот логин уже используется. Попробуйте другой."
+    COURIER_INCOMPLETE_DATA = "Недостаточно данных для создания учетной записи"
+    COURIER_NOT_FOUND = "Курьера с таким id нет."
+    ORDER_NOT_FOUND = "Заказ не найден"
+    INCOMPLETE_DATA_FOR_ENTER = "Недостаточно данных для входа"
+    ACCOUNT_NOT_FOUND = "Учетная запись не найдена"
