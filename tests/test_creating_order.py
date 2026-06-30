@@ -28,8 +28,8 @@ class TestCreatingOrder:
         "comment": TestData.comment,
         "color": color
     }
-        
-        response = requests.post(URL.ORDERS, json=payload)
-
-        assert response.status_code == 201
-        assert 'track' in response.json()
+        with allure.step('Отправка запросов на создание заказов с разными цветами самоката. Проверка ответов'):
+            response = requests.post(URL.ORDERS, json=payload)
+        with allure.step('Проверка ответа'):
+            assert response.status_code == 201
+            assert 'track' in response.json()
