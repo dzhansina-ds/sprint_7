@@ -5,6 +5,7 @@ import allure
 import string
 import random
 from generator import Generator
+from urls import URL
 
 class TestLoginCourier:
 
@@ -21,15 +22,15 @@ class TestLoginCourier:
             "firstName": first_name
         }
 
-        requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier', data=payload)
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        requests.post(URL.COURIER, data=payload)
+        response = requests.post(URL.COURIER_LOGIN, data=payload)
 
         assert response.status_code == 200
         assert 'id' in response.json()
 
-        logging = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        logging = requests.post(URL.COURIER_LOGIN, data=payload)
         courier_id = logging.json().get('id')
-        requests.delete(f'https://qa-scooter.praktikum-services.ru/api/v1/courier/{courier_id}')
+        requests.delete(f'{URL.COURIER}/{courier_id}')
 
     @allure.title('Логин курьера. Ошибка при незаполнении обязательных полей. Использовании параметризации')
     @pytest.mark.parametrize('skipped_data', ['login', 'password'])
@@ -41,7 +42,7 @@ class TestLoginCourier:
     }
         payload[skipped_data] = ''
 
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        response = requests.post(URL.COURIER_LOGIN, data=payload)
 
         assert response.status_code == 400
         assert response.json()['message'] == "Недостаточно данных для входа"
@@ -61,7 +62,7 @@ class TestLoginCourier:
         "login": login,
         "password": password
     }
-        response = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
+        response = requests.post(URL.COURIER_LOGIN, data=payload)
 
         assert response.status_code == 404
         assert response.json()['message'] == "Учетная запись не найдена"
