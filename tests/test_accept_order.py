@@ -8,19 +8,9 @@ from urls import URL
 
 class TestAcceptOrder:
     @allure.title('Принятие заказа. Успешный запрос с id курьера и заказа. Проверка тела ответа')
-    def test_accept_order_success(self):
+    def test_accept_order_success(self,create_courier):
 
-        login = Generator().generate_random_string(10)
-        password = Generator().generate_random_string(10)
-        first_name = Generator().generate_random_string(10)
-
-        payload_courier = {
-            "login": login,
-            "password": password,
-            "firstName": first_name
-        }
-
-        create_courier = requests.post(URL.COURIER, data=payload_courier)
+        payload_courier = create_courier
         login_courier = requests.post(URL.COURIER_LOGIN, data=payload_courier)
         courier_id = login_courier.json().get('id')
 
@@ -51,9 +41,6 @@ class TestAcceptOrder:
         assert response.status_code == 200
         assert response.json() == TestAnswer.SUCCESS_TEXT
 
-        requests.delete(f'{URL.COURIER}/{courier_id}')
-
-
     @allure.title('Принятие заказа. В запросе не указываем id курьера. Проверка тела ответа')
     def test_accept_order_without_courier_id_error(self):
         params = {}
@@ -77,26 +64,14 @@ class TestAcceptOrder:
 
 
     @allure.title('Принятие заказа. В запросе не указываем id заказа. Проверка тела ответа')
-    def test_accept_order_without_order_id_error (self):
-
-        login = Generator().generate_random_string(10)
-        password = Generator().generate_random_string(10)
-        first_name = Generator().generate_random_string(10)
-
-        payload_courier = {
-            "login": login,
-            "password": password,
-            "firstName": first_name
-        }
-
-        create_courier = requests.post(URL.COURIER, data=payload_courier)
+    def test_accept_order_without_order_id_error (self,create_courier):
+        payload_courier = create_courier
         login_courier = requests.post(URL.COURIER_LOGIN, data=payload_courier)
         courier_id = login_courier.json().get('id')
 
         params = {
             "courierId": courier_id
         }
-
         response = requests.put(URL.ORDERS_ACCEPT, params=params)
 
         assert response.status_code == 404
@@ -104,29 +79,15 @@ class TestAcceptOrder:
 
 
     @allure.title('Принятие заказа. В запросе указываем неверный id заказа. Проверка тела ответа')
-    def test_accept_order_wrong_order_id_error (self):
-
-        login = Generator().generate_random_string(10)
-        password = Generator().generate_random_string(10)
-        first_name = Generator().generate_random_string(10)
-
-        payload_courier = {
-            "login": login,
-            "password": password,
-            "firstName": first_name
-        }
-
-        create_courier = requests.post(URL.COURIER, data=payload_courier)
+    def test_accept_order_wrong_order_id_error (self,create_courier):
+        payload_courier = create_courier
         login_courier = requests.post(URL.COURIER_LOGIN, data=payload_courier)
         courier_id = login_courier.json().get('id')
 
         params = {
             "courierId": courier_id
         }
-
         response = requests.put(f'{URL.ORDERS_ACCEPT}/0', params=params)
 
         assert response.status_code == 404
         assert response.json()['message'] == TestAnswer.ORDER_ID_NOT_EXIST
-
-        requests.delete(f'{URL.COURIER}/{courier_id}')

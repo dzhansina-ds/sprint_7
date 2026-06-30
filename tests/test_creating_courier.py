@@ -33,28 +33,12 @@ class TestCreatingCourier:
 
 
     @allure.title('Создание курьеров с одинаковыми данными. Проверка реагирования системы на ввод одинаковых данных для регистрации')
-    def test_create_two_identical_couriers_error(self):
+    def test_create_two_identical_couriers_error(self,create_courier):
+        payload = create_courier
+        create_second_courier = requests.post(URL.COURIER, data=payload)
+        assert create_second_courier.status_code == 409
+        assert create_second_courier.json()['message'] == TestAnswer.BUSY_USERNAME
         
-        login = Generator().generate_random_string(10)
-        password = Generator().generate_random_string(10)
-        first_name = Generator().generate_random_string(10)
-
-        payload = {
-            "login": login,
-            "password": password,
-            "firstName": first_name
-        }
-
-        first_response = requests.post(URL.COURIER, data=payload)
-        assert first_response.status_code == 201
-
-        second_response = requests.post(URL.COURIER, data=payload)
-        assert second_response.status_code == 409
-        assert second_response.json()['message'] == TestAnswer.BUSY_USERNAME
-
-        logging = requests.post(URL.COURIER_LOGIN, data=payload)
-        courier_id = logging.json().get('id')
-        requests.delete(f'{URL.COURIER}/{courier_id}')
 
     @allure.title('Создание курьеров с незаполненными полями (логин, пароль). Использование параметризации')
     @pytest.mark.parametrize('skipped_data', ['login', 'password'])

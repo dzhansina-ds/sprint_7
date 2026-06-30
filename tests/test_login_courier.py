@@ -10,27 +10,13 @@ from urls import URL
 class TestLoginCourier:
 
     @allure.title('Логин курьера. Успешная авторизация с валидными данными. Проверка тела ответа')
-    def test_login_courier_success(self):
-
-        login = Generator().generate_random_string(10)
-        password = Generator().generate_random_string(10)
-        first_name = Generator().generate_random_string(10)
-
-        payload = {
-            "login": login,
-            "password": password,
-            "firstName": first_name
-        }
-
-        requests.post(URL.COURIER, data=payload)
+    def test_login_courier_success(self,create_courier):
+        payload = create_courier
         response = requests.post(URL.COURIER_LOGIN, data=payload)
 
         assert response.status_code == 200
         assert 'id' in response.json()
 
-        logging = requests.post(URL.COURIER_LOGIN, data=payload)
-        courier_id = logging.json().get('id')
-        requests.delete(f'{URL.COURIER}/{courier_id}')
 
     @allure.title('Логин курьера. Ошибка при незаполнении обязательных полей. Использовании параметризации')
     @pytest.mark.parametrize('skipped_data', ['login', 'password'])

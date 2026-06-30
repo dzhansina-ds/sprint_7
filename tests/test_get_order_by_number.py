@@ -29,7 +29,6 @@ class TestGetOrderByNumber:
     @allure.title('Запрос на получение заказа без номера. Проверка тела ответа')
     def test_get_order_without_number_error(self):
         params = {}
-
         response = requests.get(URL.ORDERS_TRACK,params=params)
 
         assert response.status_code == 400
@@ -38,7 +37,6 @@ class TestGetOrderByNumber:
     @allure.title('Запрос на получение заказа с несуществующим заказом. Проверка тела ответа')
     def test_get_order_with_wrong_number_error(self):
         params={"t": 0}
-
         response = requests.get(URL.ORDERS_TRACK, params=params)
 
         assert response.status_code == 404

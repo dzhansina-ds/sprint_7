@@ -9,19 +9,8 @@ from data import TestAnswer
 class TestDeleteCourier:
 
     @allure.title('Удаление курьера. Успешное удаление существующего курьера. Проверка тела ответа')
-    def test_delete_courier_success(self):
-
-        login = Generator().generate_random_string(10)
-        password = Generator().generate_random_string(10)
-        first_name = Generator().generate_random_string(10)
-
-        payload = {
-            "login": login,
-            "password": password,
-            "firstName": first_name
-        }
-
-        create_courier = requests.post(URL.COURIER, data=payload)
+    def test_delete_courier_success(self,create_courier):
+        payload = create_courier
         login_courier = requests.post(URL.COURIER_LOGIN, data=payload)
         courier_id = login_courier.json().get('id')
 
