@@ -3,18 +3,15 @@ from data import TestData
 import allure 
 import string
 import random
+from generator import Generator
 
 class TestAcceptOrder:
     @allure.title('Принятие заказа. Успешный запрос с id курьера и заказа. Проверка тела ответа')
     def test_accept_order_success(self):
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
 
-        login = generate_random_string(10)
-        password = generate_random_string(10)
-        first_name = generate_random_string(10)
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
 
         payload_courier = {
             "login": login,
@@ -80,14 +77,10 @@ class TestAcceptOrder:
 
     @allure.title('Принятие заказа. В запросе не указываем id заказа. Проверка тела ответа')
     def test_accept_order_without_order_id_error (self):
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
 
-        login = generate_random_string(10)
-        password = generate_random_string(10)
-        first_name = generate_random_string(10)
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
 
         payload_courier = {
             "login": login,
@@ -111,14 +104,10 @@ class TestAcceptOrder:
 
     @allure.title('Принятие заказа. В запросе указываем неверный id заказа. Проверка тела ответа')
     def test_accept_order_wrong_order_id_error (self):
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
 
-        login = generate_random_string(10)
-        password = generate_random_string(10)
-        first_name = generate_random_string(10)
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
 
         payload_courier = {
             "login": login,

@@ -3,19 +3,16 @@ import random
 import string
 import pytest
 import allure 
+from generator import Generator
 
 class TestCreatingCourier:
     
     @allure.title('Создание курьера. Проверка кода и тела ответа')
     def test_create_courier_success(self):
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
-
-        login = generate_random_string(10)
-        password = generate_random_string(10)
-        first_name = generate_random_string(10)
+        
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
 
         payload = {
             "login": login,
@@ -35,14 +32,10 @@ class TestCreatingCourier:
 
     @allure.title('Создание курьеров с одинаковыми данными. Проверка реагирования системы на ввод одинаковых данных для регистрации')
     def test_create_two_identical_couriers_error(self):
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
-
-        login = generate_random_string(10)
-        password = generate_random_string(10)
-        first_name = generate_random_string(10)
+        
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
 
         payload = {
             "login": login,
@@ -64,14 +57,10 @@ class TestCreatingCourier:
     @allure.title('Создание курьеров с незаполненными полями (логин, пароль). Использование параметризации')
     @pytest.mark.parametrize('skipped_data', ['login', 'password'])
     def test_create_courier_with_incomplete_data_error(self,skipped_data):
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
 
-        login = generate_random_string(10)
-        password = generate_random_string(10)
-        first_name = generate_random_string(10)
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
 
         payload = {
             "login": login,

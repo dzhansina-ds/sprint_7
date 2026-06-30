@@ -2,19 +2,16 @@ import requests
 import allure 
 import string
 import random
+from generator import Generator
 
 class TestDeleteCourier:
 
-    @allure.title('Удаление курьера. Успешное удаление существующего курьер. Проверка тела ответа')
+    @allure.title('Удаление курьера. Успешное удаление существующего курьера. Проверка тела ответа')
     def test_delete_courier_success(self):
-        def generate_random_string(length):
-            letters = string.ascii_lowercase
-            random_string = ''.join(random.choice(letters) for i in range(length))
-            return random_string
 
-        login = generate_random_string(10)
-        password = generate_random_string(10)
-        first_name = generate_random_string(10)
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
 
         payload = {
             "login": login,
@@ -26,9 +23,7 @@ class TestDeleteCourier:
         login_courier = requests.post('https://qa-scooter.praktikum-services.ru/api/v1/courier/login', data=payload)
         courier_id = login_courier.json().get('id')
 
-        
         response = requests.delete(f'https://qa-scooter.praktikum-services.ru/api/v1/courier/{courier_id}')
-
 
         assert response.status_code == 200
         assert response.json() == {"ok":True}
