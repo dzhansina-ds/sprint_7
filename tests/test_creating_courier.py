@@ -1,0 +1,67 @@
+import requests
+import random 
+import string
+import pytest
+import allure 
+from generator import Generator
+from urls import URL
+from data import TestAnswer
+
+class TestCreatingCourier:
+    
+    @allure.title('Создание курьера. Проверка кода и тела ответа')
+    def test_create_courier_success(self):
+        
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
+
+        payload = {
+            "login": login,
+            "password": password,
+            "firstName": first_name
+        }
+
+        with allure.step('Отправка запроса на создание курьера'):
+            response = requests.post(URL.COURIER, data=payload)
+        with allure.step('Проверка ответа'):
+            assert response.status_code == 201
+            assert response.json() == TestAnswer.SUCCESS_TEXT
+
+        with allure.step('Удаление курьера'):
+            logging = requests.post(URL.COURIER_LOGIN, data=payload)
+            courier_id = logging.json().get('id')
+            requests.delete(f'{URL.COURIER}/{courier_id}')
+
+
+    @allure.title('Создание курьеров с одинаковыми данными. Проверка реагирования системы на ввод одинаковых данных для регистрации')
+    def test_create_two_identical_couriers_error(self,create_courier):
+        payload = create_courier
+        
+        with allure.step('Отправка запроса на создание второго курьера с теми же данными'):
+            create_second_courier = requests.post(URL.COURIER, data=payload)
+        with allure.step('Проверка ответа'):
+            assert create_second_courier.status_code == 409
+            assert create_second_courier.json()['message'] == TestAnswer.BUSY_USERNAME
+        
+
+    @allure.title('Создание курьеров с незаполненными полями (логин, пароль). Использование параметризации')
+    @pytest.mark.parametrize('skipped_data', ['login', 'password'])
+    def test_create_courier_with_incomplete_data_error(self,skipped_data):
+
+        login = Generator().generate_random_string(10)
+        password = Generator().generate_random_string(10)
+        first_name = Generator().generate_random_string(10)
+
+        payload = {
+            "login": login,
+            "password": password,
+            "firstName": first_name
+        }
+        payload[skipped_data] = None
+
+        with allure.step('Отправка запросов на создание курьера с незаполнеными полями. Проверка ответа'):
+            response = requests.post(URL.COURIER, data=payload)
+        with allure.step('Проверка ответа'):
+            assert response.status_code == 400
+            assert response.json()['message'] == TestAnswer.COURIER_INCOMPLETE_DATA
